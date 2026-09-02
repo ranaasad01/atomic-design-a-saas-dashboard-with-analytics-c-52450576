@@ -1,0 +1,793 @@
+{
+  "nav": {
+    "overview": "Descripción General",
+    "analytics": "Análisis",
+    "reports": "Reportes",
+    "team": "Equipo",
+    "settings": "Configuración",
+    "help": "Ayuda",
+    "logout": "Cerrar Sesión",
+    "upgrade": "Actualizar Plan"
+  },
+  "topBar": {
+    "searchPlaceholder": "Buscar cualquier cosa…",
+    "notificationsLabel": "Ver notificaciones",
+    "helpLabel": "Abrir Centro de Ayuda",
+    "appGridLabel": "Cambiar espacio de trabajo",
+    "userLabel": "Marcus Webb, Admin"
+  },
+  "overview": {
+    "pageTitle": "Panel de Control",
+    "pageSubtitle": "Descripción general de tus métricas clave y desempeño.",
+    "dateRange": "Últimos 30 Días",
+    "exportButton": "Exportar",
+    "kpiTitle": "Negocio de un Vistazo",
+    "kpiSubtitle": "Indicadores clave de desempeño de los últimos 30 días, comparados con el período anterior.",
+    "revenueChartTitle": "Ingresos vs. Gastos",
+    "revenueChartSubtitle": "Tendencia de seis meses comparando ingresos brutos contra gastos operativos. Pasa el cursor sobre cualquier punto para ver cifras exactas.",
+    "revenueChartExport": "Exportar CSV",
+    "acquisitionTitle": "Adquisición de Usuarios por Fuente",
+    "acquisitionSubtitle": "Desglose de nuevos registros de usuarios por canal de adquisición durante el período actual.",
+    "acquisitionCta": "Ver Análisis Completo",
+    "activityTitle": "Actividad Reciente",
+    "activitySubtitle": "Flujo en vivo de los últimos eventos en tu espacio de trabajo — actualizado en tiempo real.",
+    "activityCta": "Ver Toda la Actividad"
+  },
+  "analytics": {
+    "pageTitle": "Análisis",
+    "pageSubtitle": "Análisis profundo del comportamiento del usuario, patrones de tráfico y desempeño regional.",
+    "kpiTitle": "Indicadores Clave de Desempeño",
+    "kpiSubtitle": "Una instantánea de las cuatro métricas que más importan — rastreadas contra el período anterior de 30 días.",
+    "userGrowthTitle": "Crecimiento de Usuarios",
+    "userGrowthSubtitle": "Registros mensuales de nuevos usuarios graficados contra usuarios recurrentes durante los últimos seis meses.",
+    "trafficTitle": "Fuentes de Tráfico",
+    "trafficSubtitle": "Desglose de sesiones por canal de adquisición para el período seleccionado.",
+    "regionalTitle": "Distribución Regional",
+    "regionalSubtitle": "Base de usuarios distribuida en cuatro regiones principales. América del Norte lidera la adopción, mientras que APAC muestra el crecimiento trimestral más rápido con 18.3%.",
+    "performanceTitle": "Datos de Desempeño Reciente",
+    "performanceSubtitle": "Lecturas de métricas granulares de los últimos 14 días. Detecta anomalías temprano — El estado de Advertencia activa una alerta automatizada para tu equipo.",
+    "exportButton": "Exportar CSV",
+    "dateRange": "Últimos 30 días",
+    "heading": "Análisis",
+    "perfTableTitle": "Rendimiento",
+    "subheading": "Realiza un seguimiento de tus métricas e insights clave",
+    "trafficSourcesTitle": "Fuentes de tráfico",
+    "viewAction": "Ver"
+  },
+  "reports": {
+    "pageTitle": "Informes",
+    "pageSubtitle": "Administra, programa y comparte tus informes de análisis desde un centro único.",
+    "kpiTitle": "Informes de un vistazo",
+    "kpiSubtitle": "Una instantánea en vivo del volumen de tu biblioteca de informes, cobertura de automatización y alcance de colaboración.",
+    "recentTitle": "Informes recientes",
+    "recentSubtitle": "Todos los informes generados en el período seleccionado. Haz clic en una fila para obtener una vista previa o usa el menú de acciones para descargar o editar.",
+    "newReportButton": "Nuevo informe",
+    "scheduledTitle": "Informes programados",
+    "scheduledSubtitle": "Trabajos de informe automatizados que se ejecutan según tu cadencia configurada.",
+    "addScheduleButton": "Agregar programación",
+    "filterSearchPlaceholder": "Buscar por nombre de informe…",
+    "filterApply": "Aplicar filtros",
+    "filterReset": "Restablecer filtros",
+    "paginationInfo": "Mostrando 1–10 de 148 informes",
+    "paginationPage": "Página 1 de 15"
+  },
+  "team": {
+    "pageTitle": "Gestión de equipo",
+    "pageSubtitle": "Ve y administra a todos los que tienen acceso a tu espacio de trabajo de Analytix Pro. Asigna roles, realiza un seguimiento del estado de las invitaciones y mantén los permisos de tu equipo actualizados.",
+    "inviteButton": "Invitar usuario",
+    "membersCount": "8 activos en 3 roles",
+    "tableTitle": "Miembros del equipo",
+    "tableSubtitle": "Todos los miembros del espacio de trabajo se enumeran a continuación con su rol asignado, estado actual y acciones disponibles.",
+    "inviteTitle": "Invitar a un nuevo miembro del equipo",
+    "inviteSubtitle": "Envía una invitación por correo electrónico para agregar a alguien a tu espacio de trabajo. Elige su rol antes de enviar.",
+    "inviteSendButton": "Enviar invitación",
+    "inviteEmailPlaceholder": "colega@empresa.com",
+    "inviteMessagePlaceholder": "Añade una nota a tu invitación…",
+    "inviteExpiry": "La invitación expira después de 7 días; reenvía en cualquier momento desde la tabla de equipo."
+  },
+  "settings": {
+    "pageTitle": "Configuración",
+    "pageSubtitle": "Administra tus preferencias de cuenta, seguridad, notificaciones y equipo en un solo lugar.",
+    "profileTitle": "Configuración de perfil",
+    "profileSubtitle": "Mantén tu información personal actualizada. Tu nombre y puesto son visibles para tus compañeros en todo el espacio de trabajo.",
+    "profileSaveButton": "Guardar cambios",
+    "profileFullNameLabel": "Nombre completo",
+    "profileEmailLabel": "Dirección de Correo",
+    "profileJobTitleLabel": "Puesto de Trabajo",
+    "profileAvatarHint": "JPG, PNG, GIF hasta 2 MB",
+    "profileRemoveAvatar": "Eliminar Avatar",
+    "securityTitle": "Seguridad",
+    "securitySubtitle": "Protege tu cuenta con una contraseña segura y autenticación de dos factores. Recomendamos habilitar 2FA para todas las cuentas de administrador.",
+    "securityUpdatePassword": "Actualizar Contraseña",
+    "securityPasswordLastChanged": "Contraseña actualizada hace 47 días (14 de marzo de 2025)",
+    "security2FALabel": "Autenticación de Dos Factores",
+    "security2FAStatus": "Deshabilitada",
+    "security2FADescription": "Añade una capa extra de seguridad. Una vez habilitada, se te pedirá un código de verificación en cada inicio de sesión.",
+    "security2FAButton": "Habilitar 2FA",
+    "notificationsTitle": "Preferencias de Notificaciones",
+    "notificationsSubtitle": "Elige cómo y cuándo Analytix Pro se comunica contigo. Puedes activar o desactivar canales individuales en cualquier momento.",
+    "notificationsSaveButton": "Guardar Preferencias",
+    "teamTitle": "Gestión de Equipo",
+    "teamSubtitle": "Gestiona quién tiene acceso a tu espacio de trabajo de Analytix Pro. Asigna roles para controlar qué puede ver, editar o exportar cada miembro.",
+    "teamInviteButton": "Invitar Usuario"
+  },
+  "help": {
+    "pageTitle": "Centro de Ayuda",
+    "heroTitle": "¿Cómo podemos ayudarte hoy?",
+    "heroSubtitle": "Busca en nuestra base de conocimientos completa o explora las categorías a continuación.",
+    "heroSearchPlaceholder": "Busca artículos, tutoriales o solución de problemas…",
+    "heroSearchButton": "Buscar",
+    "topicsTitle": "Explorar Temas",
+    "faqTitle": "Preguntas Frecuentes Principales",
+    "contactTitle": "Contactar Soporte",
+    "liveChatTitle": "Chat en Vivo",
+    "liveChatDescription": "Disponible 24/7 para clientes Enterprise.",
+    "liveChatButton": "Iniciar Chat",
+    "emailSupportTitle": "Soporte por Correo",
+    "emailSupportDescription": "Respuesta típicamente en 4 horas.",
+    "emailSupportButton": "Abrir Ticket",
+    "communityTitle": "Foro Comunitario",
+    "communityDescription": "Conecta con otros usuarios de Kinetic Enterprise y comparte soluciones.",
+    "communityButton": "Visitar Foro"
+  },
+  "logout": {
+    "cancelButton": "Cancelar",
+    "confirmButton": "Cerrar Sesión",
+    "currentSession": "Sesión Actual",
+    "errorGeneric": "Algo salió mal. Por favor, inténtalo de nuevo.",
+    "footerLink": "¿Necesitas ayuda?",
+    "footerNote": "¿Preguntas sobre tu cuenta?",
+    "goHome": "Ir a Inicio",
+    "redirecting": "Redirigiendo...",
+    "securityDesc": "Cerrarás sesión en todas las sesiones activas.",
+    "securityNote": "Por tu seguridad",
+    "sessionActive": "Activa",
+    "sessionPlan": "Plan",
+    "sessionPlatform": "Plataforma",
+    "sessionStatus": "Estado",
+    "signingOut": "Cerrando sesión...",
+    "subtitle": "¿Estás seguro de que deseas cerrar sesión?",
+    "successDesc": "Has cerrado sesión correctamente.",
+    "successTitle": "Sesión Cerrada",
+    "title": "Cerrar Sesión"
+  },
+  "kpiCards": [
+    {
+      "label": "TOTAL REVENUE",
+      "value": "$284,390",
+      "trend": "up",
+      "trendValue": "12.4%",
+      "trendLabel": "vs last month"
+    },
+    {
+      "label": "ACTIVE USERS",
+      "value": "18,642",
+      "trend": "up",
+      "trendValue": "8.7%",
+      "trendLabel": "vs last month"
+    },
+    {
+      "label": "AVG. SESSION TIME",
+      "value": "4m 32s",
+      "trend": "down",
+      "trendValue": "2.1%",
+      "trendLabel": "vs last month"
+    },
+    {
+      "label": "CONVERSION RATE",
+      "value": "3.68%",
+      "trend": "up",
+      "trendValue": "0.5 pp",
+      "trendLabel": "vs last month"
+    }
+  ],
+  "revenueChart": [
+    {
+      "month": "Jan",
+      "revenue": 38200,
+      "expenses": 24100
+    },
+    {
+      "month": "Feb",
+      "revenue": 41500,
+      "expenses": 25800
+    },
+    {
+      "month": "Mar",
+      "revenue": 39800,
+      "expenses": 23400
+    },
+    {
+      "month": "Apr",
+      "revenue": 46300,
+      "expenses": 27600
+    },
+    {
+      "month": "May",
+      "revenue": 52100,
+      "expenses": 29900
+    },
+    {
+      "month": "Jun",
+      "revenue": 66490,
+      "expenses": 31200
+    }
+  ],
+  "userAcquisition": [
+    {
+      "source": "Organic Search",
+      "users": 6390,
+      "color": "#10b981"
+    },
+    {
+      "source": "Direct",
+      "users": 5840,
+      "color": "#0ea5e9"
+    },
+    {
+      "source": "Social Media",
+      "users": 4210,
+      "color": "#2d3e9e"
+    },
+    {
+      "source": "Referral",
+      "users": 2202,
+      "color": "#f59e0b"
+    }
+  ],
+  "recentActivity": [
+    {
+      "icon": "📊",
+      "description": "New report generated — 'Q2 Revenue Summary' exported as PDF",
+      "time": "2 minutes ago"
+    },
+    {
+      "icon": "👤",
+      "description": "New user registered — priya.nair@acmecorp.com joined via referral link",
+      "time": "11 minutes ago"
+    },
+    {
+      "icon": "⚠️",
+      "description": "Conversion rate alert — dropped below 3.5% threshold on mobile segment",
+      "time": "34 minutes ago"
+    },
+    {
+      "icon": "🔒",
+      "description": "Security event — Two-factor authentication enabled by Marcus Webb",
+      "time": "1 hour ago"
+    },
+    {
+      "icon": "📈",
+      "description": "Milestone reached — Active users surpassed 18,000 for the first time",
+      "time": "2 hours ago"
+    },
+    {
+      "icon": "🗓️",
+      "description": "Scheduled report sent — 'Weekly Traffic Digest' delivered to 6 recipients",
+      "time": "3 hours ago"
+    },
+    {
+      "icon": "👥",
+      "description": "Team update — Jordan Kim promoted to Admin role by Marcus Webb",
+      "time": "5 hours ago"
+    },
+    {
+      "icon": "💳",
+      "description": "Billing event — Pro plan renewed successfully for $299/month",
+      "time": "8 hours ago"
+    }
+  ],
+  "analyticsKpiCards": [
+    {
+      "label": "TOTAL USERS",
+      "value": "148,320",
+      "trend": "up",
+      "trendValue": "12.4%",
+      "trendLabel": "vs last period",
+      "icon": "users"
+    },
+    {
+      "label": "ACTIVE SESSIONS",
+      "value": "9,741",
+      "trend": "up",
+      "trendValue": "7.8%",
+      "trendLabel": "vs last period",
+      "icon": "activity"
+    },
+    {
+      "label": "RETENTION RATE",
+      "value": "68.3%",
+      "trend": "down",
+      "trendValue": "2.1%",
+      "trendLabel": "vs last period",
+      "icon": "repeat"
+    },
+    {
+      "label": "CHURN RATE",
+      "value": "4.7%",
+      "trend": "down",
+      "trendValue": "0.9%",
+      "trendLabel": "vs last period",
+      "icon": "user-minus"
+    }
+  ],
+  "userGrowthChart": [
+    {
+      "month": "Jan",
+      "newUsers": 18400,
+      "returningUsers": 12300
+    },
+    {
+      "month": "Feb",
+      "newUsers": 21700,
+      "returningUsers": 14800
+    },
+    {
+      "month": "Mar",
+      "newUsers": 24100,
+      "returningUsers": 16200
+    },
+    {
+      "month": "Apr",
+      "newUsers": 27800,
+      "returningUsers": 18900
+    },
+    {
+      "month": "May",
+      "newUsers": 31200,
+      "returningUsers": 21400
+    },
+    {
+      "month": "Jun",
+      "newUsers": 35600,
+      "returningUsers": 24700
+    }
+  ],
+  "trafficSourcesChart": [
+    {
+      "name": "Direct",
+      "value": 34,
+      "color": "#0ea5e9"
+    },
+    {
+      "name": "Organic Search",
+      "value": 28,
+      "color": "#2d3e9e"
+    },
+    {
+      "name": "Social Media",
+      "value": 22,
+      "color": "#10b981"
+    },
+    {
+      "name": "Referral",
+      "value": 16,
+      "color": "#f59e0b"
+    }
+  ],
+  "regionalDistribution": [
+    {
+      "region": "NA",
+      "users": 52400,
+      "color": "#0ea5e9"
+    },
+    {
+      "region": "EU",
+      "users": 38700,
+      "color": "#2d3e9e"
+    },
+    {
+      "region": "APAC",
+      "users": 34100,
+      "color": "#10b981"
+    },
+    {
+      "region": "LATAM",
+      "users": 23120,
+      "color": "#f59e0b"
+    }
+  ],
+  "performanceTable": [
+    {
+      "date": "Jun 14, 2025",
+      "metric": "Page Load Time",
+      "value": "1.24 s",
+      "status": "Optimal",
+      "action": "View details"
+    },
+    {
+      "date": "Jun 13, 2025",
+      "metric": "API Error Rate",
+      "value": "2.8%",
+      "status": "Warning",
+      "action": "Investigate"
+    },
+    {
+      "date": "Jun 13, 2025",
+      "metric": "Avg Session Duration",
+      "value": "4m 37s",
+      "status": "Normal",
+      "action": "View details"
+    },
+    {
+      "date": "Jun 12, 2025",
+      "metric": "Conversion Rate",
+      "value": "5.92%",
+      "status": "Optimal",
+      "action": "View details"
+    },
+    {
+      "date": "Jun 12, 2025",
+      "metric": "Bounce Rate",
+      "value": "41.3%",
+      "status": "Warning",
+      "action": "Investigate"
+    },
+    {
+      "date": "Jun 11, 2025",
+      "metric": "Daily Active Users",
+      "value": "9,204",
+      "status": "Optimal",
+      "action": "View details"
+    },
+    {
+      "date": "Jun 10, 2025",
+      "metric": "Revenue per Session",
+      "value": "$3.47",
+      "status": "Normal",
+      "action": "View details"
+    },
+    {
+      "date": "Jun 09, 2025",
+      "metric": "New Sign-ups",
+      "value": "1,138",
+      "status": "Optimal",
+      "action": "View details"
+    }
+  ],
+  "reportsKpiCards": [
+    {
+      "label": "TOTAL REPORTS",
+      "value": "148",
+      "trend": "up",
+      "trendValue": "12%",
+      "trendLabel": "vs. last month"
+    },
+    {
+      "label": "SCHEDULED REPORTS",
+      "value": "34",
+      "trend": "up",
+      "trendValue": "6%",
+      "trendLabel": "vs. last month"
+    },
+    {
+      "label": "SHARED REPORTS",
+      "value": "27",
+      "trend": "down",
+      "trendValue": "3%",
+      "trendLabel": "vs. last month"
+    },
+    {
+      "label": "FAILED LAST RUN",
+      "value": "2",
+      "trend": "up",
+      "trendValue": "1",
+      "trendLabel": "since last week"
+    }
+  ],
+  "recentReportsTable": [
+    {
+      "name": "Monthly Revenue Summary",
+      "type": "Revenue",
+      "lastRun": "Jun 28, 2025, 09:14 AM",
+      "status": "Completed"
+    },
+    {
+      "name": "User Acquisition Breakdown",
+      "type": "User Growth",
+      "lastRun": "Jun 27, 2025, 06:00 AM",
+      "status": "Completed"
+    },
+    {
+      "name": "Q2 Retention Analysis",
+      "type": "Retention",
+      "lastRun": "Jun 25, 2025, 11:30 PM",
+      "status": "Completed"
+    },
+    {
+      "name": "Traffic Source Attribution",
+      "type": "Traffic",
+      "lastRun": "Jun 24, 2025, 08:00 AM",
+      "status": "Failed"
+    },
+    {
+      "name": "Conversion Funnel Report",
+      "type": "Conversion",
+      "lastRun": "Jun 22, 2025, 07:45 AM",
+      "status": "Completed"
+    },
+    {
+      "name": "Weekly Active Users",
+      "type": "User Growth",
+      "lastRun": "Jun 21, 2025, 06:00 AM",
+      "status": "Completed"
+    },
+    {
+      "name": "Churn Rate by Cohort",
+      "type": "Retention",
+      "lastRun": "Jun 20, 2025, 12:00 PM",
+      "status": "Pending"
+    },
+    {
+      "name": "Regional Revenue Breakdown",
+      "type": "Revenue",
+      "lastRun": "Jun 18, 2025, 09:00 AM",
+      "status": "Completed"
+    },
+    {
+      "name": "Custom KPI Dashboard Export",
+      "type": "Custom",
+      "lastRun": "Jun 15, 2025, 03:30 PM",
+      "status": "Completed"
+    },
+    {
+      "name": "Ad Spend vs. Revenue",
+      "type": "Revenue",
+      "lastRun": "Jun 10, 2025, 10:00 AM",
+      "status": "Failed"
+    }
+  ],
+  "scheduledReportsSidebar": [
+    {
+      "name": "Monthly Revenue Summary",
+      "schedule": "Every 1st of month at 09:00 AM UTC",
+      "nextRun": "Jul 1, 2025",
+      "isActive": true
+    },
+    {
+      "name": "User Acquisition Breakdown",
+      "schedule": "Every Monday at 06:00 AM UTC",
+      "nextRun": "Jun 30, 2025",
+      "isActive": true
+    },
+    {
+      "name": "Weekly Active Users",
+      "schedule": "Every Monday at 06:00 AM UTC",
+      "nextRun": "Jun 30, 2025",
+      "isActive": true
+    },
+    {
+      "name": "Churn Rate by Cohort",
+      "schedule": "Every 20th of month at 12:00 PM UTC",
+      "nextRun": "Jul 20, 2025",
+      "isActive": false
+    },
+    {
+      "name": "Traffic Source Attribution",
+      "schedule": "Daily at 08:00 AM UTC",
+      "nextRun": "Jun 29, 2025",
+      "isActive": true
+    },
+    {
+      "name": "Regional Revenue Breakdown",
+      "schedule": "Every 15th of month at 09:00 AM UTC",
+      "nextRun": "Jul 15, 2025",
+      "isActive": true
+    },
+    {
+      "name": "Q2 Retention Analysis",
+      "schedule": "Quarterly on the 25th at 11:30 PM UTC",
+      "nextRun": "Sep 25, 2025",
+      "isActive": true
+    }
+  ],
+  "teamTable": [
+    {
+      "name": "Jordan Ellis",
+      "email": "jordan.ellis@company.com",
+      "role": "Admin",
+      "status": "Active",
+      "initials": "JE",
+      "color": "#0ea5e9"
+    },
+    {
+      "name": "Priya Nair",
+      "email": "priya.nair@company.com",
+      "role": "Editor",
+      "status": "Active",
+      "initials": "PN",
+      "color": "#2d3e9e"
+    },
+    {
+      "name": "Marcus Webb",
+      "email": "marcus.webb@company.com",
+      "role": "Editor",
+      "status": "Active",
+      "initials": "MW",
+      "color": "#142175"
+    },
+    {
+      "name": "Sofia Reyes",
+      "email": "sofia.reyes@company.com",
+      "role": "Viewer",
+      "status": "Active",
+      "initials": "SR",
+      "color": "#10b981"
+    },
+    {
+      "name": "Daniel Park",
+      "email": "daniel.park@company.com",
+      "role": "Viewer",
+      "status": "Pending",
+      "initials": "DP",
+      "color": "#f59e0b"
+    },
+    {
+      "name": "Aisha Okonkwo",
+      "email": "aisha.okonkwo@company.com",
+      "role": "Editor",
+      "status": "Active",
+      "initials": "AO",
+      "color": "#7c3aed"
+    },
+    {
+      "name": "Tom Hargreaves",
+      "email": "tom.hargreaves@company.com",
+      "role": "Viewer",
+      "status": "Pending",
+      "initials": "TH",
+      "color": "#64748b"
+    },
+    {
+      "name": "Lena Müller",
+      "email": "lena.muller@company.com",
+      "role": "Admin",
+      "status": "Active",
+      "initials": "LM",
+      "color": "#06b6d4"
+    }
+  ],
+  "settingsNav": [
+    {
+      "key": "profile",
+      "label": "Profile",
+      "description": "Update your name, email, job title, and avatar"
+    },
+    {
+      "key": "security",
+      "label": "Security",
+      "description": "Manage your password and two-factor authentication"
+    },
+    {
+      "key": "notifications",
+      "label": "Notifications",
+      "description": "Control email, in-app, and digest alert preferences"
+    },
+    {
+      "key": "team",
+      "label": "Team",
+      "description": "Invite members, assign roles, and manage access"
+    }
+  ],
+  "notificationsSection": [
+    {
+      "label": "Email Digest",
+      "description": "Weekly summary of key metrics and report completions",
+      "enabled": true
+    },
+    {
+      "label": "Report Completion Alerts",
+      "description": "Get notified by email when a scheduled report finishes running",
+      "enabled": true
+    },
+    {
+      "label": "Anomaly Detection Alerts",
+      "description": "Receive in-app alerts when a KPI moves more than 15% outside its baseline",
+      "enabled": true
+    },
+    {
+      "label": "Team Activity Notifications",
+      "description": "In-app alerts when teammates join, leave, or change roles",
+      "enabled": false
+    },
+    {
+      "label": "Product Updates & Announcements",
+      "description": "Monthly emails about new features and improvements",
+      "enabled": false
+    }
+  ],
+  "settingsTeamTable": [
+    {
+      "name": "Jordan Mitchell",
+      "email": "jordan.mitchell@kinetic.io",
+      "role": "Admin",
+      "status": "Active",
+      "initials": "JM",
+      "color": "#142175"
+    },
+    {
+      "name": "Priya Nair",
+      "email": "priya.nair@kinetic.io",
+      "role": "Editor",
+      "status": "Active",
+      "initials": "PN",
+      "color": "#0ea5e9"
+    },
+    {
+      "name": "Marcus Webb",
+      "email": "marcus.webb@kinetic.io",
+      "role": "Viewer",
+      "status": "Active",
+      "initials": "MW",
+      "color": "#2d3e9e"
+    },
+    {
+      "name": "Sofia Delgado",
+      "email": "sofia.delgado@kinetic.io",
+      "role": "Editor",
+      "status": "Pending",
+      "initials": "SD",
+      "color": "#f59e0b"
+    },
+    {
+      "name": "Liam Okafor",
+      "email": "liam.okafor@kinetic.io",
+      "role": "Viewer",
+      "status": "Pending",
+      "initials": "LO",
+      "color": "#64748b"
+    }
+  ],
+  "helpTopics": [
+    {
+      "title": "Getting Started",
+      "description": "Initial setup, platform basics, and quick-start guides for new users.",
+      "icon": "rocket",
+      "cta": "View Articles"
+    },
+    {
+      "title": "Account & Billing",
+      "description": "Manage subscriptions, update payment methods, and view invoices.",
+      "icon": "credit-card",
+      "cta": "View Articles"
+    },
+    {
+      "title": "Security & Access",
+      "description": "Role-based access control, SSO integration, and data privacy policies.",
+      "icon": "shield",
+      "cta": "View Articles"
+    },
+    {
+      "title": "API Documentation",
+      "description": "Endpoints, authentication methods, and developer resources.",
+      "icon": "code",
+      "cta": "View Docs"
+    }
+  ],
+  "helpFaqs": [
+    {
+      "question": "How do I invite team members to my workspace?",
+      "answer": "Navigate to Team Management in the sidebar or Settings page. Click 'Invite User', enter the colleague's email address, select their role (Admin, Editor, or Viewer), and click 'Send Invitation'. They'll receive an email with a link to set up their account. Invitations expire after 7 days."
+    },
+    {
+      "question": "Where can I download my monthly invoice?",
+      "answer": "Go to Settings and select the Billing section. Under 'Invoice History', you'll find a list of all past invoices with download links in PDF format. Invoices are generated on the 1st of each month and retained for 24 months."
+    },
+    {
+      "question": "What are the rate limits for the API?",
+      "answer": "The Analytix Pro API enforces rate limits based on your plan tier. Enterprise plans receive 10,000 requests per minute per API key. If you exceed this limit, the API returns a 429 Too Many Requests response. Contact support to request a limit increase."
+    },
+    {
+      "question": "How do I configure Single Sign-On (SSO)?",
+      "answer": "SSO is available on Enterprise plans. Navigate to Settings > Security > Single Sign-On. You can configure SAML 2.0 or OIDC with your identity provider (Okta, Azure AD, Google Workspace). You'll need your IdP metadata URL and to whitelist our callback URL."
+    },
+    {
+      "question": "Can I export dashboard data to CSV or Excel?",
+      "answer": "Yes. On any dashboard page, click the 'Export' button in the top-right corner. You can export the current view as CSV or schedule automated exports via the Reports page. Scheduled exports can be delivered to email recipients or an S3 bucket."
+    },
+    {
+      "question": "How does anomaly detection work?",
+      "answer": "Analytix Pro monitors your KPIs against a rolling 30-day baseline. When a metric moves more than 15% outside its expected range, the system triggers an in-app alert and optionally an email notification. You can adjust the threshold in Settings > Notifications."
+    }
+  ]
+}
