@@ -39,9 +39,12 @@
   --border: #e2e8f0;
   --muted-foreground: #64748b;
   --ring: #0ea5e9;
-    --brand-indigo: #09090b;
-    --brand-indigo-dark: #09090b;
-    --accent: #09090b;
+  --brand-indigo: #09090b;
+  --brand-indigo-dark: #09090b;
+  --accent: #09090b;
+
+  /* Brand teal — used in team page role badges */
+  --brand-teal: #0ea5e9;
 }
 
 * {
@@ -86,4 +89,17 @@ body {
 /* Hover utility */
 .hover\:bg-white\/8:hover {
   background-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Sidebar offset for dashboard content area */
+.dashboard-content {
+  margin-left: 260px;
+}
+
+/* Recharts visibility fixes */
+.recharts-wrapper {
+  overflow: visible !important;
+}
+.recharts-surface {
+  overflow: visible !important;
 }

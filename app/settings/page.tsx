@@ -5,10 +5,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { User, Lock, Bell, Users, Save, Upload, X, Check, ChevronDown, Mail, Shield, MoreVertical, UserPlus, AlertCircle } from 'lucide-react';
 import { Reveal } from "@/components/Reveal";
 import { fadeInUp, staggerContainer } from "@/lib/motion";
-type MOCK_TEAM_MEMBERS = any;
-const MOCK_TEAM_MEMBERS: any = [];
 import { createClient } from "@/lib/supabase/client";
 import type { Database } from "@/types/supabase";
+import DashboardShell from '@/components/DashboardShell';
 
 type TeamMemberRow = Database["public"]["Tables"]["team_members"]["Row"];
 type UserProfileRow = Database["public"]["Tables"]["user_profiles"]["Row"];
@@ -89,38 +88,27 @@ export default function SettingsPage() {
 
     async function loadProfile() {
       setProfileLoading(true);
-      const { data } = await supabase.from("user_profiles").select("*").limit(1).maybeSingle();
+      const { data } = await supabase
+        .from("user_profiles")
+        .select("*")
+        .limit(1)
+        .single();
       if (data) {
         setProfile(data);
         setFullName(data.full_name ?? "");
         setEmail(data.email ?? "");
         setJobTitle(data.job_title ?? "");
-        setTwoFaEnabled(data.two_fa_enabled ?? false);
       }
       setProfileLoading(false);
     }
 
     async function loadTeam() {
       setTeamLoading(true);
-      const { data } = await supabase.from("team_members").select("*").order("created_at", { ascending: true });
-      if (data && data.length > 0) {
-        setTeamMembers(data);
-      } else {
-        // Fallback to mock data if table is empty
-        setTeamMembers(
-          MOCK_TEAM_MEMBERS.map((m) => ({
-            id: m.id,
-            invited_by: "",
-            user_id: null,
-            full_name: m.name,
-            email: m.email,
-            role: m.role,
-            status: m.status,
-            avatar_initials: m.initials,
-            created_at: new Date().toISOString(),
-          }))
-        );
-      }
+      const { data } = await supabase
+        .from("team_members")
+        .select("*")
+        .order("created_at", { ascending: true });
+      if (data) setTeamMembers(data);
       setTeamLoading(false);
     }
 
@@ -128,17 +116,19 @@ export default function SettingsPage() {
     loadTeam();
   }, []);
 
+  // Close menus on outside click
   useEffect(() => {
-    function handleClickOutside(e: MouseEvent) {
+    function handleClick(e: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
         setOpenMenu(null);
       }
     }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
-  function handleSaveProfile() {
+  function handleSaveProfile(e: React.FormEvent) {
+    e.preventDefault();
     setSaveSuccess(true);
     setTimeout(() => setSaveSuccess(false), 2500);
   }
@@ -149,519 +139,468 @@ export default function SettingsPage() {
     );
   }
 
-  const displayMembers = teamMembers.length > 0 ? teamMembers : MOCK_TEAM_MEMBERS.map((m) => ({
-    id: m.id,
-    invited_by: "",
-    user_id: null,
-    full_name: m.name,
-    email: m.email,
-    role: m.role,
-    status: m.status,
-    avatar_initials: m.initials,
-    created_at: new Date().toISOString(),
-  }));
+  const FALLBACK_TEAM: TeamMemberRow[] = [
+    { id: "1", full_name: "Marcus Webb", email: "marcus@company.com", role: "Admin", status: "Active", avatar_initials: "MW", invited_by: "", user_id: null, created_at: new Date().toISOString() },
+    { id: "2", full_name: "Priya Nair", email: "priya@company.com", role: "Editor", status: "Active", avatar_initials: "PN", invited_by: "", user_id: null, created_at: new Date().toISOString() },
+    { id: "3", full_name: "Jordan Kim", email: "jordan@company.com", role: "Viewer", status: "Pending", avatar_initials: "JK", invited_by: "", user_id: null, created_at: new Date().toISOString() },
+  ];
+
+  const displayTeam = teamMembers.length > 0 ? teamMembers : FALLBACK_TEAM;
+
+  function getInitials(name: string | null) {
+    if (!name) return "?";
+    return name.split(" ").map((p) => p[0]).join("").toUpperCase().slice(0, 2);
+  }
+
+  const AVATAR_COLORS = ["#0ea5e9", "#2d3e9e", "#10b981", "#f59e0b", "#7c3aed"];
 
   return (
-    <div className="min-h-screen bg-[hsl(var(--background))]">
-      <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-        {/* Page Header */}
-        <Reveal>
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold tracking-tight text-[hsl(var(--foreground))]">
-              Settings
-            </h1>
-            <p className="mt-1 text-[hsl(var(--muted-foreground))]">
-              Manage your account preferences, security, and team configuration.
-            </p>
-          </div>
-        </Reveal>
+    <DashboardShell
+      title="Settings"
+      subtitle="Manage your account, security, notifications, and team preferences"
+    >
+      {/* Sub-nav tabs */}
+      <div className="mb-6 flex gap-1 rounded-xl border border-[var(--border)] bg-white p-1 w-fit shadow-sm">
+        {SUB_NAV.map(({ key, label, icon: Icon }) => (
+          <button
+            key={key}
+            onClick={() => setActiveSection(key)}
+            className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-all duration-200 ${
+              activeSection === key
+                ? "bg-[var(--color-primary)] text-white shadow-sm"
+                : "text-[var(--color-muted)] hover:text-[var(--color-on-surface)] hover:bg-slate-50"
+            }`}
+          >
+            <Icon className="h-4 w-4" />
+            {label}
+          </button>
+        ))}
+      </div>
 
-        <div className="flex flex-col gap-8 lg:flex-row">
-          {/* Left Sub-Nav */}
-          <Reveal className="lg:w-56 shrink-0">
-            <nav className="rounded-2xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] p-2 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_-8px_rgba(0,0,0,0.08)]">
-              {SUB_NAV.map((item) => {
-                const Icon = item.icon;
-                const isActive = activeSection === item.key;
-                return (
-                  <button
-                    key={item.key}
-                    onClick={() => setActiveSection(item.key)}
-                    className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
-                      isActive
-                        ? "bg-[var(--accent)]/10 text-[var(--accent)]"
-                        : "text-[hsl(var(--muted-foreground))] hover:bg-[hsl(var(--muted))]/50 hover:text-[hsl(var(--foreground))]"
-                    }`}
-                  >
-                    <Icon className="h-4 w-4 shrink-0" />
-                    {item.label}
-                  </button>
-                );
-              })}
-            </nav>
-          </Reveal>
-
-          {/* Right Content */}
-          <div className="flex-1 space-y-6">
-            <AnimatePresence mode="wait">
-              {/* ── PROFILE ── */}
-              {activeSection === "profile" && (
-                <motion.div
-                  key="profile"
-                  variants={fadeInUp}
-                  initial="hidden"
-                  animate="visible"
-                  exit={{ opacity: 0, y: -12, transition: { duration: 0.2 } }}
-                  className="space-y-6"
-                >
-                  <div className="rounded-2xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_-8px_rgba(0,0,0,0.08)]">
-                    <h2 className="mb-1 text-lg font-semibold text-[hsl(var(--foreground))]">Profile Settings</h2>
-                    <p className="mb-6 text-sm text-[hsl(var(--muted-foreground))]">Update your personal information and public profile.</p>
-
-                    {profileLoading ? (
-                      <div className="space-y-4">
-                        {[1, 2, 3].map((i) => (
-                          <div key={i} className="h-10 animate-pulse rounded-xl bg-[hsl(var(--muted))]/40" />
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="grid gap-6 sm:grid-cols-2">
-                        {/* Avatar */}
-                        <div className="sm:col-span-2 flex items-center gap-5">
-                          <div className="relative">
-                            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-[var(--accent)]/20 text-2xl font-bold text-[var(--accent)]">
-                              {fullName ? fullName.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase() : "AP"}
-                            </div>
-                            <button className="absolute -bottom-1 -right-1 flex h-7 w-7 items-center justify-center rounded-full border-2 border-[hsl(var(--card))] bg-[var(--accent)] text-white shadow-sm transition-transform hover:scale-110">
-                              <Upload className="h-3 w-3" />
-                            </button>
-                          </div>
-                          <div>
-                            <p className="text-sm font-medium text-[hsl(var(--foreground))]">Profile Photo</p>
-                            <p className="text-xs text-[hsl(var(--muted-foreground))]">JPG, PNG or GIF. Max 2MB.</p>
-                            <button className="mt-1 text-xs text-red-500 hover:text-red-600 transition-colors">Remove Photo</button>
-                          </div>
-                        </div>
-
-                        {/* Full Name */}
-                        <div className="flex flex-col gap-1.5">
-                          <label className="text-sm font-medium text-[hsl(var(--foreground))]">Full Name</label>
-                          <input
-                            type="text"
-                            value={fullName}
-                            onChange={(e) => setFullName(e.target.value)}
-                            placeholder="Your full name"
-                            className="rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--background))] px-3.5 py-2.5 text-sm text-[hsl(var(--foreground))] placeholder:text-[hsl(var(--muted-foreground))] outline-none ring-0 transition-all focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/20"
-                          />
-                        </div>
-
-                        {/* Email */}
-                        <div className="flex flex-col gap-1.5">
-                          <label className="text-sm font-medium text-[hsl(var(--foreground))]">Email Address</label>
-                          <input
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            placeholder="you@company.com"
-                            className="rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--background))] px-3.5 py-2.5 text-sm text-[hsl(var(--foreground))] placeholder:text-[hsl(var(--muted-foreground))] outline-none ring-0 transition-all focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/20"
-                          />
-                        </div>
-
-                        {/* Job Title */}
-                        <div className="flex flex-col gap-1.5 sm:col-span-2">
-                          <label className="text-sm font-medium text-[hsl(var(--foreground))]">Job Title</label>
-                          <input
-                            type="text"
-                            value={jobTitle}
-                            onChange={(e) => setJobTitle(e.target.value)}
-                            placeholder="e.g. Head of Growth"
-                            className="rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--background))] px-3.5 py-2.5 text-sm text-[hsl(var(--foreground))] placeholder:text-[hsl(var(--muted-foreground))] outline-none ring-0 transition-all focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/20"
-                          />
-                        </div>
-
-                        {/* Save */}
-                        <div className="sm:col-span-2 flex items-center gap-3">
-                          <motion.button
-                            whileHover={{ scale: 1.02 }}
-                            whileTap={{ scale: 0.98 }}
-                            onClick={handleSaveProfile}
-                            className="flex items-center gap-2 rounded-xl bg-[var(--accent)] px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:opacity-90"
-                          >
-                            <Save className="h-4 w-4" />
-                            Save Changes
-                          </motion.button>
-                          <AnimatePresence>
-                            {saveSuccess && (
-                              <motion.span
-                                initial={{ opacity: 0, x: -8 }}
-                                animate={{ opacity: 1, x: 0 }}
-                                exit={{ opacity: 0 }}
-                                className="flex items-center gap-1.5 text-sm text-emerald-600"
-                              >
-                                <Check className="h-4 w-4" />
-                                Saved successfully
-                              </motion.span>
-                            )}
-                          </AnimatePresence>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </motion.div>
-              )}
-
-              {/* ── SECURITY ── */}
-              {activeSection === "security" && (
-                <motion.div
-                  key="security"
-                  variants={fadeInUp}
-                  initial="hidden"
-                  animate="visible"
-                  exit={{ opacity: 0, y: -12, transition: { duration: 0.2 } }}
-                  className="space-y-4"
-                >
-                  <div className="rounded-2xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_-8px_rgba(0,0,0,0.08)]">
-                    <h2 className="mb-1 text-lg font-semibold text-[hsl(var(--foreground))]">Security</h2>
-                    <p className="mb-6 text-sm text-[hsl(var(--muted-foreground))]">Manage your password and authentication settings.</p>
-
-                    <div className="divide-y divide-[hsl(var(--border))]">
-                      {/* Password row */}
-                      <div className="flex flex-col gap-3 py-5 sm:flex-row sm:items-center sm:justify-between">
-                        <div className="flex items-start gap-3">
-                          <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[hsl(var(--muted))]/50">
-                            <Lock className="h-4 w-4 text-[hsl(var(--muted-foreground))]" />
-                          </div>
-                          <div>
-                            <p className="text-sm font-medium text-[hsl(var(--foreground))]">Password</p>
-                            <p className="text-xs text-[hsl(var(--muted-foreground))]">
-                              {profile?.password_last_changed_at
-                                ? `Last changed ${new Date(profile.password_last_changed_at).toLocaleDateString("en-US", { month: "long", year: "numeric" })}`
-                                : "Last changed 3 months ago"}
-                            </p>
-                          </div>
-                        </div>
-                        <button className="self-start rounded-xl border border-[hsl(var(--border))] px-4 py-2 text-sm font-medium text-[hsl(var(--foreground))] transition-all hover:bg-[hsl(var(--muted))]/50 sm:self-auto">
-                          Update Password
-                        </button>
-                      </div>
-
-                      {/* 2FA row */}
-                      <div className="flex flex-col gap-3 py-5 sm:flex-row sm:items-center sm:justify-between">
-                        <div className="flex items-start gap-3">
-                          <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[hsl(var(--muted))]/50">
-                            <Shield className="h-4 w-4 text-[hsl(var(--muted-foreground))]" />
-                          </div>
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <p className="text-sm font-medium text-[hsl(var(--foreground))]">Two-Factor Authentication</p>
-                              <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${twoFaEnabled ? "bg-emerald-500/10 text-emerald-600" : "bg-slate-200 text-slate-500"}`}>
-                                {twoFaEnabled ? "Enabled" : "Disabled"}
-                              </span>
-                            </div>
-                            <p className="text-xs text-[hsl(var(--muted-foreground))]">
-                              Add an extra layer of security to your account with an authenticator app.
-                            </p>
-                          </div>
-                        </div>
-                        <motion.button
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                          onClick={() => setTwoFaEnabled((v) => !v)}
-                          className={`self-start rounded-xl px-4 py-2 text-sm font-semibold transition-all sm:self-auto ${
-                            twoFaEnabled
-                              ? "border border-[hsl(var(--border))] text-[hsl(var(--foreground))] hover:bg-[hsl(var(--muted))]/50"
-                              : "bg-[var(--accent)] text-white shadow-sm hover:opacity-90"
-                          }`}
-                        >
-                          {twoFaEnabled ? "Disable 2FA" : "Enable 2FA"}
-                        </motion.button>
-                      </div>
-
-                      {/* Active sessions */}
-                      <div className="flex flex-col gap-3 py-5 sm:flex-row sm:items-center sm:justify-between">
-                        <div className="flex items-start gap-3">
-                          <div className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[hsl(var(--muted))]/50">
-                            <AlertCircle className="h-4 w-4 text-[hsl(var(--muted-foreground))]" />
-                          </div>
-                          <div>
-                            <p className="text-sm font-medium text-[hsl(var(--foreground))]">Active Sessions</p>
-                            <p className="text-xs text-[hsl(var(--muted-foreground))]">
-                              You are signed in on 2 devices. Last active: Chrome on macOS, 2 hours ago.
-                            </p>
-                          </div>
-                        </div>
-                        <button className="self-start rounded-xl border border-red-200 px-4 py-2 text-sm font-medium text-red-500 transition-all hover:bg-red-50 sm:self-auto">
-                          Sign Out All
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-
-              {/* ── NOTIFICATIONS ── */}
-              {activeSection === "notifications" && (
-                <motion.div
-                  key="notifications"
-                  variants={fadeInUp}
-                  initial="hidden"
-                  animate="visible"
-                  exit={{ opacity: 0, y: -12, transition: { duration: 0.2 } }}
-                >
-                  <div className="rounded-2xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_-8px_rgba(0,0,0,0.08)]">
-                    <h2 className="mb-1 text-lg font-semibold text-[hsl(var(--foreground))]">Notification Preferences</h2>
-                    <p className="mb-6 text-sm text-[hsl(var(--muted-foreground))]">Choose which updates and alerts you want to receive.</p>
-
-                    <motion.div
-                      variants={staggerContainer}
-                      initial="hidden"
-                      animate="visible"
-                      className="divide-y divide-[hsl(var(--border))]"
-                    >
-                      {notifications.map((n) => (
-                        <motion.div
-                          key={n.key}
-                          variants={fadeInUp}
-                          className="flex items-center justify-between py-4"
-                        >
-                          <div className="pr-4">
-                            <p className="text-sm font-medium text-[hsl(var(--foreground))]">{n.label}</p>
-                            <p className="text-xs text-[hsl(var(--muted-foreground))]">{n.description}</p>
-                          </div>
-                          <button
-                            onClick={() => toggleNotification(n.key)}
-                            className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 focus:outline-none ${
-                              n.enabled ? "bg-[var(--accent)]" : "bg-[hsl(var(--muted))]"
-                            }`}
-                            role="switch"
-                            aria-checked={n.enabled}
-                          >
-                            <span
-                              className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm ring-0 transition-transform duration-200 ${
-                                n.enabled ? "translate-x-5" : "translate-x-0"
-                              }`}
-                            />
-                          </button>
-                        </motion.div>
-                      ))}
-                    </motion.div>
-
-                    <div className="mt-6 flex justify-end">
-                      <motion.button
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        className="flex items-center gap-2 rounded-xl bg-[var(--accent)] px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:opacity-90"
+      {/* Profile Section */}
+      <AnimatePresence mode="wait">
+        {activeSection === "profile" && (
+          <motion.div
+            key="profile"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.2 }}
+          >
+            <Reveal>
+              <div className="rounded-2xl border border-[var(--border)] bg-white shadow-sm overflow-hidden">
+                <div className="border-b border-[var(--border)] px-6 py-4">
+                  <h2 className="text-base font-semibold text-[var(--color-on-surface)]">Profile Information</h2>
+                  <p className="text-sm text-[var(--color-muted)] mt-0.5">Update your personal details and public profile.</p>
+                </div>
+                <form onSubmit={handleSaveProfile} className="px-6 py-6 space-y-5">
+                  {/* Avatar */}
+                  <div className="flex items-center gap-4">
+                    <div className="relative">
+                      <div
+                        className="h-16 w-16 rounded-full flex items-center justify-center text-xl font-bold text-white"
+                        style={{ backgroundColor: "#0ea5e9" }}
                       >
-                        <Save className="h-4 w-4" />
-                        Save Preferences
-                      </motion.button>
+                        {getInitials(fullName || "Marcus Webb")}
+                      </div>
+                      <button
+                        type="button"
+                        className="absolute -bottom-1 -right-1 h-6 w-6 rounded-full bg-[var(--color-primary)] flex items-center justify-center border-2 border-white hover:bg-[var(--color-sidebar-active)] transition-colors"
+                        aria-label="Upload avatar"
+                      >
+                        <Upload className="h-3 w-3 text-white" />
+                      </button>
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-[var(--color-on-surface)]">{fullName || "Marcus Webb"}</p>
+                      <p className="text-xs text-[var(--color-muted)]">{email || "marcus@company.com"}</p>
                     </div>
                   </div>
-                </motion.div>
-              )}
 
-              {/* ── TEAM ── */}
-              {activeSection === "team" && (
-                <motion.div
-                  key="team"
-                  variants={fadeInUp}
-                  initial="hidden"
-                  animate="visible"
-                  exit={{ opacity: 0, y: -12, transition: { duration: 0.2 } }}
-                  className="space-y-4"
-                >
-                  <div className="rounded-2xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] p-6 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_8px_24px_-8px_rgba(0,0,0,0.08)]">
-                    <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                      <div>
-                        <h2 className="text-lg font-semibold text-[hsl(var(--foreground))]">Team Management</h2>
-                        <p className="text-sm text-[hsl(var(--muted-foreground))]">
-                          Manage roles and access for your workspace members.
-                        </p>
-                      </div>
-                      <motion.button
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        onClick={() => setInviteOpen(true)}
-                        className="flex items-center gap-2 rounded-xl bg-[var(--accent)] px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:opacity-90"
-                      >
-                        <UserPlus className="h-4 w-4" />
-                        Invite User
-                      </motion.button>
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <div>
+                      <label className="block text-xs font-medium text-[var(--color-on-surface)] mb-1.5">Full Name</label>
+                      <input
+                        type="text"
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                        placeholder="Marcus Webb"
+                        className="w-full rounded-lg border border-[var(--border)] bg-[var(--color-background)] px-3 py-2 text-sm text-[var(--color-on-surface)] placeholder:text-[var(--color-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] transition-shadow"
+                      />
                     </div>
+                    <div>
+                      <label className="block text-xs font-medium text-[var(--color-on-surface)] mb-1.5">Email Address</label>
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="marcus@company.com"
+                        className="w-full rounded-lg border border-[var(--border)] bg-[var(--color-background)] px-3 py-2 text-sm text-[var(--color-on-surface)] placeholder:text-[var(--color-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] transition-shadow"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-[var(--color-on-surface)] mb-1.5">Job Title</label>
+                      <input
+                        type="text"
+                        value={jobTitle}
+                        onChange={(e) => setJobTitle(e.target.value)}
+                        placeholder="Head of Analytics"
+                        className="w-full rounded-lg border border-[var(--border)] bg-[var(--color-background)] px-3 py-2 text-sm text-[var(--color-on-surface)] placeholder:text-[var(--color-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] transition-shadow"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-medium text-[var(--color-on-surface)] mb-1.5">Department</label>
+                      <input
+                        type="text"
+                        defaultValue="Growth & Analytics"
+                        className="w-full rounded-lg border border-[var(--border)] bg-[var(--color-background)] px-3 py-2 text-sm text-[var(--color-on-surface)] placeholder:text-[var(--color-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] transition-shadow"
+                      />
+                    </div>
+                  </div>
 
-                    {/* Invite modal */}
+                  <div className="flex items-center justify-between pt-2">
                     <AnimatePresence>
-                      {inviteOpen && (
-                        <>
-                          <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
-                            onClick={() => setInviteOpen(false)}
-                          />
-                          <motion.div
-                            initial={{ opacity: 0, scale: 0.95, y: 16 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.95, y: 16 }}
-                            transition={{ duration: 0.2, ease: "easeOut" }}
-                            className="fixed left-1/2 top-1/2 z-50 w-full max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] p-6 shadow-2xl"
-                          >
-                            <div className="mb-4 flex items-center justify-between">
-                              <h3 className="text-base font-semibold text-[hsl(var(--foreground))]">Invite Team Member</h3>
-                              <button
-                                onClick={() => setInviteOpen(false)}
-                                className="rounded-lg p-1 text-[hsl(var(--muted-foreground))] hover:bg-[hsl(var(--muted))]/50 hover:text-[hsl(var(--foreground))]"
-                              >
-                                <X className="h-4 w-4" />
-                              </button>
-                            </div>
-                            <div className="space-y-4">
-                              <div className="flex flex-col gap-1.5">
-                                <label className="text-sm font-medium text-[hsl(var(--foreground))]">Email Address</label>
-                                <div className="relative">
-                                  <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[hsl(var(--muted-foreground))]" />
-                                  <input
-                                    type="email"
-                                    value={inviteEmail}
-                                    onChange={(e) => setInviteEmail(e.target.value)}
-                                    placeholder="colleague@company.com"
-                                    className="w-full rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--background))] py-2.5 pl-9 pr-3.5 text-sm text-[hsl(var(--foreground))] placeholder:text-[hsl(var(--muted-foreground))] outline-none focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/20"
-                                  />
-                                </div>
-                              </div>
-                              <div className="flex flex-col gap-1.5">
-                                <label className="text-sm font-medium text-[hsl(var(--foreground))]">Role</label>
-                                <div className="relative">
-                                  <select
-                                    value={inviteRole}
-                                    onChange={(e) => setInviteRole(e.target.value)}
-                                    className="w-full appearance-none rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--background))] px-3.5 py-2.5 text-sm text-[hsl(var(--foreground))] outline-none focus:border-[var(--accent)] focus:ring-2 focus:ring-[var(--accent)]/20"
-                                  >
-                                    <option value="Admin">Admin</option>
-                                    <option value="Editor">Editor</option>
-                                    <option value="Viewer">Viewer</option>
-                                  </select>
-                                  <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[hsl(var(--muted-foreground))]" />
-                                </div>
-                              </div>
-                              <div className="flex gap-3 pt-1">
-                                <button
-                                  onClick={() => setInviteOpen(false)}
-                                  className="flex-1 rounded-xl border border-[hsl(var(--border))] py-2.5 text-sm font-medium text-[hsl(var(--foreground))] hover:bg-[hsl(var(--muted))]/50"
-                                >
-                                  Cancel
-                                </button>
-                                <button
-                                  onClick={() => setInviteOpen(false)}
-                                  className="flex-1 rounded-xl bg-[var(--accent)] py-2.5 text-sm font-semibold text-white hover:opacity-90"
-                                >
-                                  Send Invite
-                                </button>
-                              </div>
-                            </div>
-                          </motion.div>
-                        </>
+                      {saveSuccess && (
+                        <motion.span
+                          initial={{ opacity: 0, x: -8 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          exit={{ opacity: 0 }}
+                          className="flex items-center gap-1.5 text-sm text-emerald-600 font-medium"
+                        >
+                          <Check className="h-4 w-4" />
+                          Changes saved
+                        </motion.span>
                       )}
+                      {!saveSuccess && <span />}
                     </AnimatePresence>
+                    <button
+                      type="submit"
+                      className="flex items-center gap-2 rounded-lg bg-[var(--color-primary)] px-5 py-2 text-sm font-medium text-white hover:bg-[var(--color-sidebar-active)] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)]"
+                    >
+                      <Save className="h-4 w-4" />
+                      Save Changes
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </Reveal>
+          </motion.div>
+        )}
 
-                    {/* Team table */}
-                    {teamLoading ? (
-                      <div className="space-y-3">
-                        {[1, 2, 3, 4].map((i) => (
-                          <div key={i} className="flex items-center gap-3">
-                            <div className="h-9 w-9 animate-pulse rounded-full bg-[hsl(var(--muted))]/40" />
-                            <div className="flex-1 space-y-1.5">
-                              <div className="h-3.5 w-40 animate-pulse rounded bg-[hsl(var(--muted))]/40" />
-                              <div className="h-3 w-28 animate-pulse rounded bg-[hsl(var(--muted))]/30" />
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="overflow-x-auto rounded-xl border border-[hsl(var(--border))]" ref={menuRef}>
-                        <table className="w-full text-sm">
-                          <thead className="border-b border-[hsl(var(--border))] bg-[hsl(var(--muted))]/30">
-                            <tr>
-                              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-[hsl(var(--muted-foreground))]">Member</th>
-                              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-[hsl(var(--muted-foreground))]">Role</th>
-                              <th className="px-4 py-3 text-left text-xs font-semibold uppercase tracking-wide text-[hsl(var(--muted-foreground))]">Status</th>
-                              <th className="px-4 py-3 text-right text-xs font-semibold uppercase tracking-wide text-[hsl(var(--muted-foreground))]">Actions</th>
-                            </tr>
-                          </thead>
-                          <tbody className="divide-y divide-[hsl(var(--border))]">
-                            {displayMembers.map((member) => {
-                              const initials = member.avatar_initials ?? member.full_name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase();
-                              const memberColor = MOCK_TEAM_MEMBERS.find((m) => m.email === member.email)?.color ?? "#0ea5e9";
-                              return (
-                                <tr key={member.id} className="group transition-colors hover:bg-[hsl(var(--muted))]/20">
-                                  <td className="px-4 py-3">
-                                    <div className="flex items-center gap-3">
-                                      <AvatarInitials initials={initials} color={memberColor} />
-                                      <div>
-                                        <p className="font-medium text-[hsl(var(--foreground))]">{member.full_name}</p>
-                                        <p className="text-xs text-[hsl(var(--muted-foreground))]">{member.email}</p>
-                                      </div>
-                                    </div>
-                                  </td>
-                                  <td className="px-4 py-3">
-                                    <RoleBadge role={member.role} />
-                                  </td>
-                                  <td className="px-4 py-3">
-                                    <StatusBadge status={member.status} />
-                                  </td>
-                                  <td className="px-4 py-3 text-right">
-                                    <div className="relative inline-block">
-                                      <button
-                                        onClick={() => setOpenMenu(openMenu === member.id ? null : member.id)}
-                                        className="rounded-lg p-1.5 text-[hsl(var(--muted-foreground))] opacity-0 transition-all group-hover:opacity-100 hover:bg-[hsl(var(--muted))]/50 hover:text-[hsl(var(--foreground))]"
-                                      >
-                                        <MoreVertical className="h-4 w-4" />
-                                      </button>
-                                      <AnimatePresence>
-                                        {openMenu === member.id && (
-                                          <motion.div
-                                            initial={{ opacity: 0, scale: 0.95, y: -4 }}
-                                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                                            exit={{ opacity: 0, scale: 0.95, y: -4 }}
-                                            transition={{ duration: 0.15 }}
-                                            className="absolute right-0 top-full z-20 mt-1 w-40 rounded-xl border border-[hsl(var(--border))] bg-[hsl(var(--card))] py-1 shadow-lg"
-                                          >
-                                            {["Change Role", "Resend Invite", "Remove Member"].map((action) => (
-                                              <button
-                                                key={action}
-                                                onClick={() => setOpenMenu(null)}
-                                                className={`w-full px-3 py-2 text-left text-sm transition-colors hover:bg-[hsl(var(--muted))]/50 ${
-                                                  action === "Remove Member" ? "text-red-500" : "text-[hsl(var(--foreground))]"
-                                                }`}
-                                              >
-                                                {action}
-                                              </button>
-                                            ))}
-                                          </motion.div>
-                                        )}
-                                      </AnimatePresence>
-                                    </div>
-                                  </td>
-                                </tr>
-                              );
-                            })}
-                          </tbody>
-                        </table>
-                      </div>
-                    )}
+        {/* Security Section */}
+        {activeSection === "security" && (
+          <motion.div
+            key="security"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.2 }}
+            className="space-y-4"
+          >
+            <Reveal>
+              <div className="rounded-2xl border border-[var(--border)] bg-white shadow-sm overflow-hidden">
+                <div className="border-b border-[var(--border)] px-6 py-4">
+                  <h2 className="text-base font-semibold text-[var(--color-on-surface)]">Change Password</h2>
+                  <p className="text-sm text-[var(--color-muted)] mt-0.5">Use a strong, unique password for your account.</p>
+                </div>
+                <div className="px-6 py-6 space-y-4">
+                  {["Current Password", "New Password", "Confirm New Password"].map((label) => (
+                    <div key={label}>
+                      <label className="block text-xs font-medium text-[var(--color-on-surface)] mb-1.5">{label}</label>
+                      <input
+                        type="password"
+                        placeholder="••••••••"
+                        className="w-full max-w-sm rounded-lg border border-[var(--border)] bg-[var(--color-background)] px-3 py-2 text-sm text-[var(--color-on-surface)] placeholder:text-[var(--color-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] transition-shadow"
+                      />
+                    </div>
+                  ))}
+                  <button className="flex items-center gap-2 rounded-lg bg-[var(--color-primary)] px-5 py-2 text-sm font-medium text-white hover:bg-[var(--color-sidebar-active)] transition-colors">
+                    <Lock className="h-4 w-4" />
+                    Update Password
+                  </button>
+                </div>
+              </div>
+            </Reveal>
 
-                    <div className="mt-4 flex items-center justify-between text-xs text-[hsl(var(--muted-foreground))]">
-                      <span>{displayMembers.length} members total</span>
-                      <span>{displayMembers.filter((m) => m.status === "Active").length} active</span>
+            <Reveal delay={0.05}>
+              <div className="rounded-2xl border border-[var(--border)] bg-white shadow-sm overflow-hidden">
+                <div className="border-b border-[var(--border)] px-6 py-4">
+                  <h2 className="text-base font-semibold text-[var(--color-on-surface)]">Two-Factor Authentication</h2>
+                  <p className="text-sm text-[var(--color-muted)] mt-0.5">Add an extra layer of security to your account.</p>
+                </div>
+                <div className="px-6 py-6 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-xl bg-[var(--color-primary)]/10 flex items-center justify-center">
+                      <Shield className="h-5 w-5 text-[var(--color-primary)]" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-[var(--color-on-surface)]">Authenticator App</p>
+                      <p className="text-xs text-[var(--color-muted)]">{twoFaEnabled ? "Enabled — your account is protected" : "Not enabled — recommended for all accounts"}</p>
                     </div>
                   </div>
-                </motion.div>
+                  <button
+                    onClick={() => setTwoFaEnabled((v) => !v)}
+                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] ${
+                      twoFaEnabled ? "bg-[var(--color-accent)]" : "bg-slate-200"
+                    }`}
+                    role="switch"
+                    aria-checked={twoFaEnabled}
+                  >
+                    <span
+                      className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${
+                        twoFaEnabled ? "translate-x-6" : "translate-x-1"
+                      }`}
+                    />
+                  </button>
+                </div>
+              </div>
+            </Reveal>
+
+            <Reveal delay={0.1}>
+              <div className="rounded-2xl border border-[var(--border)] bg-white shadow-sm overflow-hidden">
+                <div className="border-b border-[var(--border)] px-6 py-4">
+                  <h2 className="text-base font-semibold text-[var(--color-on-surface)]">Active Sessions</h2>
+                  <p className="text-sm text-[var(--color-muted)] mt-0.5">Devices currently signed in to your account.</p>
+                </div>
+                <div className="divide-y divide-[var(--border)]">
+                  {[
+                    { device: "MacBook Pro — Chrome 118", location: "San Francisco, CA", time: "Active now", current: true },
+                    { device: "iPhone 15 — Safari", location: "San Francisco, CA", time: "2 hours ago", current: false },
+                    { device: "Windows PC — Edge 119", location: "New York, NY", time: "Yesterday", current: false },
+                  ].map((session) => (
+                    <div key={session.device} className="flex items-center justify-between px-6 py-4">
+                      <div>
+                        <p className="text-sm font-medium text-[var(--color-on-surface)]">{session.device}</p>
+                        <p className="text-xs text-[var(--color-muted)]">{session.location} · {session.time}</p>
+                      </div>
+                      {session.current ? (
+                        <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2.5 py-0.5 text-xs font-medium text-emerald-600">
+                          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                          Current
+                        </span>
+                      ) : (
+                        <button className="text-xs text-red-500 hover:text-red-700 font-medium transition-colors">
+                          Revoke
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </Reveal>
+          </motion.div>
+        )}
+
+        {/* Notifications Section */}
+        {activeSection === "notifications" && (
+          <motion.div
+            key="notifications"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.2 }}
+          >
+            <Reveal>
+              <div className="rounded-2xl border border-[var(--border)] bg-white shadow-sm overflow-hidden">
+                <div className="border-b border-[var(--border)] px-6 py-4">
+                  <h2 className="text-base font-semibold text-[var(--color-on-surface)]">Notification Preferences</h2>
+                  <p className="text-sm text-[var(--color-muted)] mt-0.5">Choose what you want to be notified about.</p>
+                </div>
+                <div className="divide-y divide-[var(--border)]">
+                  {notifications.map((notif) => (
+                    <div key={notif.key} className="flex items-center justify-between px-6 py-4">
+                      <div>
+                        <p className="text-sm font-medium text-[var(--color-on-surface)]">{notif.label}</p>
+                        <p className="text-xs text-[var(--color-muted)] mt-0.5">{notif.description}</p>
+                      </div>
+                      <button
+                        onClick={() => toggleNotification(notif.key)}
+                        className={`relative inline-flex h-6 w-11 flex-shrink-0 items-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-accent)] ${
+                          notif.enabled ? "bg-[var(--color-accent)]" : "bg-slate-200"
+                        }`}
+                        role="switch"
+                        aria-checked={notif.enabled}
+                        aria-label={notif.label}
+                      >
+                        <span
+                          className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${
+                            notif.enabled ? "translate-x-6" : "translate-x-1"
+                          }`}
+                        />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                <div className="border-t border-[var(--border)] px-6 py-4 flex justify-end">
+                  <button className="flex items-center gap-2 rounded-lg bg-[var(--color-primary)] px-5 py-2 text-sm font-medium text-white hover:bg-[var(--color-sidebar-active)] transition-colors">
+                    <Save className="h-4 w-4" />
+                    Save Preferences
+                  </button>
+                </div>
+              </div>
+            </Reveal>
+          </motion.div>
+        )}
+
+        {/* Team Section */}
+        {activeSection === "team" && (
+          <motion.div
+            key="team"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.2 }}
+            className="space-y-4"
+          >
+            <Reveal>
+              <div className="rounded-2xl border border-[var(--border)] bg-white shadow-sm overflow-hidden">
+                <div className="flex items-center justify-between border-b border-[var(--border)] px-6 py-4">
+                  <div>
+                    <h2 className="text-base font-semibold text-[var(--color-on-surface)]">Team Members</h2>
+                    <p className="text-sm text-[var(--color-muted)] mt-0.5">Manage access and roles for your workspace.</p>
+                  </div>
+                  <button
+                    onClick={() => setInviteOpen(true)}
+                    className="flex items-center gap-2 rounded-lg bg-[var(--color-primary)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--color-sidebar-active)] transition-colors"
+                  >
+                    <UserPlus className="h-4 w-4" />
+                    Invite Member
+                  </button>
+                </div>
+
+                {teamLoading ? (
+                  <div className="flex items-center justify-center py-12">
+                    <div className="h-6 w-6 animate-spin rounded-full border-2 border-[var(--color-accent)] border-t-transparent" />
+                  </div>
+                ) : (
+                  <div className="divide-y divide-[var(--border)]" ref={menuRef}>
+                    {displayTeam.map((member, idx) => (
+                      <div key={member.id} className="flex items-center gap-4 px-6 py-4">
+                        <AvatarInitials
+                          initials={getInitials(member.full_name)}
+                          color={AVATAR_COLORS[idx % AVATAR_COLORS.length]}
+                        />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-[var(--color-on-surface)] truncate">{member.full_name ?? "Unknown"}</p>
+                          <p className="text-xs text-[var(--color-muted)] truncate">{member.email ?? ""}</p>
+                        </div>
+                        <RoleBadge role={member.role ?? "Viewer"} />
+                        <StatusBadge status={member.status ?? "Active"} />
+                        <div className="relative">
+                          <button
+                            onClick={() => setOpenMenu(openMenu === member.id ? null : member.id)}
+                            className="p-1.5 rounded-lg hover:bg-slate-100 transition-colors text-slate-400 hover:text-slate-600"
+                            aria-label="Member actions"
+                          >
+                            <MoreVertical className="h-4 w-4" />
+                          </button>
+                          {openMenu === member.id && (
+                            <>
+                              <div className="fixed inset-0 z-10" onClick={() => setOpenMenu(null)} />
+                              <motion.div
+                                initial={{ opacity: 0, scale: 0.95, y: -4 }}
+                                animate={{ opacity: 1, scale: 1, y: 0 }}
+                                transition={{ duration: 0.15 }}
+                                className="absolute right-0 top-8 z-20 w-40 rounded-xl border border-[var(--border)] bg-white shadow-lg overflow-hidden"
+                              >
+                                <button className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-[var(--color-on-surface)] hover:bg-slate-50 transition-colors">
+                                  <Mail className="h-3.5 w-3.5 text-slate-400" />
+                                  Send invite
+                                </button>
+                                <button className="w-full flex items-center gap-2 px-3 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors">
+                                  <X className="h-3.5 w-3.5" />
+                                  Remove
+                                </button>
+                              </motion.div>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </Reveal>
+
+            {/* Invite Modal */}
+            <AnimatePresence>
+              {inviteOpen && (
+                <>
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
+                    onClick={() => setInviteOpen(false)}
+                  />
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95, y: 16 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95, y: 16 }}
+                    transition={{ duration: 0.2 }}
+                    className="fixed left-1/2 top-1/2 z-50 w-full max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl border border-[var(--border)] bg-white p-6 shadow-2xl"
+                  >
+                    <div className="flex items-center justify-between mb-5">
+                      <h3 className="text-base font-semibold text-[var(--color-on-surface)]">Invite Team Member</h3>
+                      <button
+                        onClick={() => setInviteOpen(false)}
+                        className="p-1.5 rounded-lg hover:bg-slate-100 transition-colors text-slate-400"
+                      >
+                        <X className="h-4 w-4" />
+                      </button>
+                    </div>
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-xs font-medium text-[var(--color-on-surface)] mb-1.5">Email Address</label>
+                        <input
+                          type="email"
+                          value={inviteEmail}
+                          onChange={(e) => setInviteEmail(e.target.value)}
+                          placeholder="colleague@company.com"
+                          className="w-full rounded-lg border border-[var(--border)] bg-[var(--color-background)] px-3 py-2 text-sm text-[var(--color-on-surface)] placeholder:text-[var(--color-muted)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)]"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-medium text-[var(--color-on-surface)] mb-1.5">Role</label>
+                        <div className="relative">
+                          <select
+                            value={inviteRole}
+                            onChange={(e) => setInviteRole(e.target.value)}
+                            className="w-full appearance-none rounded-lg border border-[var(--border)] bg-[var(--color-background)] px-3 py-2 text-sm text-[var(--color-on-surface)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] pr-8"
+                          >
+                            <option>Admin</option>
+                            <option>Editor</option>
+                            <option>Viewer</option>
+                          </select>
+                          <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[var(--color-muted)]" />
+                        </div>
+                      </div>
+                      <div className="flex gap-3 pt-1">
+                        <button
+                          onClick={() => setInviteOpen(false)}
+                          className="flex-1 rounded-lg border border-[var(--border)] px-4 py-2 text-sm font-medium text-[var(--color-on-surface)] hover:bg-slate-50 transition-colors"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          onClick={() => {
+                            setInviteOpen(false);
+                            setInviteEmail("");
+                          }}
+                          className="flex-1 flex items-center justify-center gap-2 rounded-lg bg-[var(--color-primary)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--color-sidebar-active)] transition-colors"
+                        >
+                          <Mail className="h-4 w-4" />
+                          Send Invite
+                        </button>
+                      </div>
+                    </div>
+                  </motion.div>
+                </>
               )}
             </AnimatePresence>
-          </div>
-        </div>
-      </div>
-    </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </DashboardShell>
   );
 }
